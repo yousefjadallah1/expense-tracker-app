@@ -32,6 +32,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _showEditBudgetDialog(double currentBudget) {
+    final controller = TextEditingController(
+      text: currentBudget.toStringAsFixed(0),
+    );
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF1C2128),
+        title: const Text('Edit Budget', style: TextStyle(color: Colors.white)),
+        content: TextField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            prefixText: '\$ ',
+            prefixStyle: const TextStyle(color: Colors.white),
+            hintText: 'Enter budget',
+            hintStyle: TextStyle(color: Colors.grey[600]),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey[700]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFF6C5CE7)),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text('Cancel', style: TextStyle(color: Colors.grey[400])),
+          ),
+          TextButton(
+            onPressed: () {
+              final budget = double.tryParse(controller.text);
+              if (budget != null && budget > 0) {
+                context.read<HomeBloc>().add(BudgetUpdated(budget));
+                Navigator.pop(dialogContext);
+              }
+            },
+            child: const Text(
+              'Save',
+              style: TextStyle(color: Color(0xFF6C5CE7)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context, state) {
           if (state.status == HomeStatus.loading && state.homeData == null) {
             return const Center(
-              child: CircularProgressIndicator(color: Color(0xFF00D09E)),
+              child: CircularProgressIndicator(color: Color(0xFF6C5CE7)),
             );
           }
 
@@ -89,26 +140,14 @@ class _HomePageState extends State<HomePage> {
                 SliverAppBar(
                   backgroundColor: const Color(0xFF0D1117),
                   floating: true,
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Welcome back,',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      const Text(
-                        'User', // Replace with actual user name
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  title: const Text(
+                    'BudgetTap',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                   actions: [
                     IconButton(
@@ -135,7 +174,11 @@ class _HomePageState extends State<HomePage> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: _BudgetCard(wallet: homeData.wallet),
+                    child: _BudgetCard(
+                      wallet: homeData.wallet,
+                      onEditBudget: () =>
+                          _showEditBudgetDialog(homeData.wallet.budget),
+                    ),
                   ),
                 ),
 
@@ -178,7 +221,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTransactionSheet,
-        backgroundColor: const Color(0xFF00D09E),
+        backgroundColor: const Color(0xFF6C5CE7),
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -187,8 +230,9 @@ class _HomePageState extends State<HomePage> {
 
 class _BudgetCard extends StatelessWidget {
   final WalletModel wallet;
+  final VoidCallback onEditBudget;
 
-  const _BudgetCard({required this.wallet});
+  const _BudgetCard({required this.wallet, required this.onEditBudget});
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +244,7 @@ class _BudgetCard extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF00D09E), Color(0xFF00B386)],
+          colors: [Color(0xFF6C5CE7), Color(0xFF8B7CF6)],
         ),
         borderRadius: BorderRadius.circular(24),
       ),
@@ -222,12 +266,29 @@ class _BudgetCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Monthly Budget',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              const Expanded(
+                child: Text(
+                  'Monthly Budget',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: onEditBudget,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.edit_outlined,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
               ),
             ],
@@ -286,15 +347,24 @@ class _BudgetCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              const Icon(Icons.show_chart, color: Colors.white, size: 18),
-              const SizedBox(width: 4),
-              Text(
-                '${wallet.expenseCount} expenses',
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ],
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, '/transactions'),
+            child: Row(
+              children: [
+                const Icon(Icons.show_chart, color: Colors.white, size: 18),
+                const SizedBox(width: 4),
+                Text(
+                  '${wallet.expenseCount} expenses',
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 14,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -313,7 +383,7 @@ class _TopCategories extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF00D09E),
+        color: const Color(0xFF6C5CE7),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -410,7 +480,14 @@ class _TransactionGroup extends StatelessWidget {
             ),
           ),
         ),
-        ...group.transactions.map((t) => _TransactionTile(transaction: t)),
+        ...group.transactions.map(
+          (t) => _TransactionTile(
+            transaction: t,
+            onDelete: () {
+              context.read<HomeBloc>().add(TransactionDeleted(t.id));
+            },
+          ),
+        ),
       ],
     );
   }
@@ -418,8 +495,9 @@ class _TransactionGroup extends StatelessWidget {
 
 class _TransactionTile extends StatelessWidget {
   final TransactionModel transaction;
+  final VoidCallback onDelete;
 
-  const _TransactionTile({required this.transaction});
+  const _TransactionTile({required this.transaction, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -427,58 +505,113 @@ class _TransactionTile extends StatelessWidget {
     final icon = CategoryHelper.getIcon(transaction.category);
     final isExpense = transaction.isExpense;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1C2128),
-        borderRadius: BorderRadius.circular(12),
+    return Dismissible(
+      key: Key(transaction.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.only(right: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFF6B6B),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.centerRight,
+        child: const Icon(Icons.delete_outline, color: Colors.white),
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  transaction.description?.isNotEmpty == true
-                      ? transaction.description!
-                      : CategoryHelper.getLabel(transaction.category),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+      confirmDismiss: (direction) async {
+        final confirmed =
+            await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: const Color(0xFF1C2128),
+                title: const Text(
+                  'Delete Transaction',
+                  style: TextStyle(color: Colors.white),
+                ),
+                content: const Text(
+                  'Are you sure you want to delete this transaction?',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.grey[400]),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  CategoryHelper.getLabel(transaction.category),
-                  style: TextStyle(color: Colors.grey[500], fontSize: 13),
-                ),
-              ],
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text(
+                      'Delete',
+                      style: TextStyle(color: Color(0xFFFF6B6B)),
+                    ),
+                  ),
+                ],
+              ),
+            ) ??
+            false;
+
+        if (confirmed) {
+          onDelete();
+        }
+        // Return false to prevent Dismissible from removing itself
+        // The bloc will refresh the list after deletion
+        return false;
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1C2128),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 24),
             ),
-          ),
-          Text(
-            '${isExpense ? '-' : '+'}\$${transaction.amount.toStringAsFixed(2)}',
-            style: TextStyle(
-              color: isExpense
-                  ? const Color(0xFFFF6B6B)
-                  : const Color(0xFF00D09E),
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    transaction.description?.isNotEmpty == true
+                        ? transaction.description!
+                        : CategoryHelper.getLabel(transaction.category),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    CategoryHelper.getLabel(transaction.category),
+                    style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Text(
+              '${isExpense ? '-' : '+'}\$${transaction.amount.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: isExpense
+                    ? const Color(0xFFFF6B6B)
+                    : const Color(0xFF00D084),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -60,7 +60,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF00D09E), width: 2),
+              borderSide: const BorderSide(color: Color(0xFF6C5CE7), width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

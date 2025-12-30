@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/auth/presentation/pages/register_page.dart';
+import 'features/auth/presentation/pages/splash_page.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/home/presentation/pages/home_page.dart';
+import 'features/transactions/presentation/bloc/transactions_bloc.dart';
+import 'features/transactions/presentation/pages/transactions_page.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -22,6 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => di.sl<AuthBloc>()),
         BlocProvider(create: (_) => di.sl<HomeBloc>()),
+        BlocProvider(create: (_) => di.sl<TransactionsBloc>()),
       ],
       child: MaterialApp(
         title: 'Expense Tracker',
@@ -31,11 +35,13 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           scaffoldBackgroundColor: const Color(0xFF0D1117),
         ),
-        initialRoute: '/login',
+        initialRoute: '/',
         routes: {
+          '/': (context) => const SplashPage(),
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
           '/home': (context) => const HomePage(),
+          '/transactions': (context) => const TransactionsPage(),
         },
       ),
     );

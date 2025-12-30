@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF00D09E),
+                        color: const Color(0xFF6C5CE7),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -129,8 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                             ? null
                             : _onLoginPressed,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00D09E),
-                          foregroundColor: Colors.black,
+                          backgroundColor: const Color(0xFF6C5CE7),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                                 width: 24,
                                 height: 24,
                                 child: CircularProgressIndicator(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   strokeWidth: 2,
                                 ),
                               )
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text(
                             'Sign up',
                             style: TextStyle(
-                              color: Color(0xFF00D09E),
+                              color: Color(0xFF6C5CE7),
                               fontWeight: FontWeight.w600,
                             ),
                           ),

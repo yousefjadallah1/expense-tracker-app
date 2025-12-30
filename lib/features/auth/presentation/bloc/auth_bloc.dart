@@ -10,6 +10,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginRequested>(_onLoginRequested);
     on<RegisterRequested>(_onRegisterRequested);
     on<LogoutRequested>(_onLogoutRequested);
+    on<CheckAuthStatus>(_onCheckAuthStatus);
+  }
+
+  Future<void> _onCheckAuthStatus(
+    CheckAuthStatus event,
+    Emitter<AuthState> emit,
+  ) async {
+    final isLoggedIn = await _authRepository.isLoggedIn();
+    if (isLoggedIn) {
+      emit(state.copyWith(status: AuthStatus.authenticated));
+    } else {
+      emit(state.copyWith(status: AuthStatus.unauthenticated));
+    }
   }
 
   Future<void> _onLoginRequested(

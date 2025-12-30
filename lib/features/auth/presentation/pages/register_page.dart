@@ -74,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF00D09E),
+                        color: const Color(0xFF6C5CE7),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -137,8 +137,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: ElevatedButton(
                         onPressed: state.status == AuthStatus.loading ? null : _onRegisterPressed,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00D09E),
-                          foregroundColor: Colors.black,
+                          backgroundColor: const Color(0xFF6C5CE7),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -165,7 +165,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           onTap: () => Navigator.pop(context),
                           child: const Text(
                             'Sign in',
-                            style: TextStyle(color: Color(0xFF00D09E), fontWeight: FontWeight.w600),
+                            style: TextStyle(color: Color(0xFF6C5CE7), fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],

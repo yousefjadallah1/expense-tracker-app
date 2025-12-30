@@ -8,6 +8,9 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/home/data/datasources/home_remote_datasource.dart';
 import 'features/home/data/repositories/home_repository.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/transactions/data/datasources/transactions_remote_datasource.dart';
+import 'features/transactions/data/repositories/transactions_repository.dart';
+import 'features/transactions/presentation/bloc/transactions_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -15,10 +18,12 @@ Future<void> init() async {
   // BLoCs
   sl.registerFactory(() => AuthBloc(sl()));
   sl.registerFactory(() => HomeBloc(sl()));
+  sl.registerFactory(() => TransactionsBloc(sl()));
 
   // Repositories
   sl.registerLazySingleton(() => AuthRepository(sl(), sl()));
   sl.registerLazySingleton(() => HomeRepository(sl()));
+  sl.registerLazySingleton(() => TransactionsRepository(sl()));
 
   // Data Sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -26,6 +31,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<TransactionsRemoteDataSource>(
+    () => TransactionsRemoteDataSourceImpl(sl()),
   );
 
   // Core

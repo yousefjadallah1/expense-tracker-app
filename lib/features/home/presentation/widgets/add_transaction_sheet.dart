@@ -70,7 +70,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.dark(
-              primary: Color(0xFF00D09E),
+              primary: Color(0xFF6C5CE7),
               surface: Color(0xFF1C2128),
             ),
           ),
@@ -177,12 +177,12 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: !_isExpense
-                              ? const Color(0xFF1A4D3E)
+                              ? const Color(0xFF2D2A5E)
                               : const Color(0xFF1C2128),
                           borderRadius: BorderRadius.circular(12),
                           border: !_isExpense
                               ? Border.all(
-                                  color: const Color(0xFF00D09E),
+                                  color: const Color(0xFF00D084),
                                   width: 2,
                                 )
                               : null,
@@ -192,7 +192,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                             'Income',
                             style: TextStyle(
                               color: !_isExpense
-                                  ? const Color(0xFF00D09E)
+                                  ? const Color(0xFF00D084)
                                   : Colors.grey,
                               fontWeight: FontWeight.w600,
                             ),
@@ -257,11 +257,11 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                       ),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFF00D09E).withOpacity(0.2)
+                            ? const Color(0xFF6C5CE7).withOpacity(0.2)
                             : const Color(0xFF1C2128),
                         borderRadius: BorderRadius.circular(12),
                         border: isSelected
-                            ? Border.all(color: const Color(0xFF00D09E))
+                            ? Border.all(color: const Color(0xFF6C5CE7))
                             : null,
                       ),
                       child: Row(
@@ -270,7 +270,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                           Icon(
                             CategoryHelper.getIcon(cat),
                             color: isSelected
-                                ? const Color(0xFF00D09E)
+                                ? const Color(0xFF6C5CE7)
                                 : Colors.grey,
                             size: 20,
                           ),
@@ -279,7 +279,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                             CategoryHelper.getLabel(cat),
                             style: TextStyle(
                               color: isSelected
-                                  ? const Color(0xFF00D09E)
+                                  ? const Color(0xFF6C5CE7)
                                   : Colors.grey,
                             ),
                           ),
@@ -347,8 +347,8 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                     child: ElevatedButton(
                       onPressed: state.isAddingTransaction ? null : _onSubmit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00D09E),
-                        foregroundColor: Colors.black,
+                        backgroundColor: const Color(0xFF6C5CE7),
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),

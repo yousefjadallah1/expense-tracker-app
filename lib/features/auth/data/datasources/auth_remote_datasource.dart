@@ -59,7 +59,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: {
           'email': email,
           'password': password,
-          if (name != null) 'name': name,
+          'name': name ?? email.split('@').first,
         },
       );
 
